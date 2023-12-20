@@ -20,13 +20,77 @@ const { NotImplementedError } = require('../extensions/index.js');
  * 
  */
 class VigenereCipheringMachine {
-  encrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  constructor(value = true) {
+    reverse = value;
   }
-  decrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+
+  alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  encrypt(text, key) {
+    const gaps = [];
+    
+    for (let i = 0; i < text.length; i++) {
+      if (text[i] === ' ') {
+        gaps.push(i);
+      }
+    }
+
+    const word = text.split(' ').join('');
+    let newKey = '';
+    newKey = newKey.padStart(word.length, key).split('');
+    gaps.forEach(i => newKey.splice(i, 0, ' '));
+    newKey = newKey.join('').toUpperCase();
+  
+    let res = '';
+
+    for (let i = 0; i < text.length; i++) {
+      if (text[i] === ' ' || text[i] === '!') {
+        res += text[i];
+        continue;
+      }
+      let x = alphabet.indexOf(text[i].toUpperCase()) + alphabet.indexOf(newKey[i]);
+      if (x > 25) {
+        x = x % 26;
+      }
+      res += alphabet[x];
+    }
+
+    return reverse ? res : res.split('').reverse().join('');
+  }
+
+  decrypt(text, key) {
+    const gaps = [];
+    
+    for (let i = 0; i < text.length; i++) {
+      if (text[i] === ' ') {
+        gaps.push(i);
+      }
+    }
+
+    const word = text.split(' ').join('');
+    let newKey = '';
+    newKey = newKey.padStart(word.length, key).split('');
+    gaps.forEach(i => newKey.splice(i, 0, ' '));
+    newKey = newKey.join('').toUpperCase();
+  
+    let res = '';
+
+    for (let i = 0; i < text.length; i++) {
+      if (text[i] === ' ' || text[i] === '!') {
+        res += text[i];
+        continue;
+      }
+      let x = alphabet.indexOf(text[i].toUpperCase()) - alphabet.indexOf(newKey[i]);
+      if (x > 25) {
+        x = x % 26;
+      }
+      if (x < 0) {
+        x = 26 - Math.abs(x);
+      }
+      res += alphabet[x];
+    }
+
+    return reverse ? res : res.split('').reverse().join('');
   }
 }
 
