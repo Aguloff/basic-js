@@ -21,12 +21,15 @@ const { NotImplementedError } = require('../extensions/index.js');
  */
 class VigenereCipheringMachine {
   constructor(value = true) {
-    reverse = value;
+    this.reverse = value;
   }
 
   alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
   encrypt(text, key) {
+    if (!text || !key) {
+      throw Error('Incorrect arguments!');
+    }
     const gaps = [];
     
     for (let i = 0; i < text.length; i++) {
@@ -44,21 +47,24 @@ class VigenereCipheringMachine {
     let res = '';
 
     for (let i = 0; i < text.length; i++) {
-      if (text[i] === ' ' || text[i] === '!') {
+      if (!text[i].match(/[a-zA-Z]/)) {
         res += text[i];
         continue;
       }
-      let x = alphabet.indexOf(text[i].toUpperCase()) + alphabet.indexOf(newKey[i]);
+      let x = this.alphabet.indexOf(text[i].toUpperCase()) + this.alphabet.indexOf(newKey[i]);
       if (x > 25) {
         x = x % 26;
       }
-      res += alphabet[x];
+      res += this.alphabet[x];
     }
 
-    return reverse ? res : res.split('').reverse().join('');
+    return this.reverse ? res : res.split('').reverse().join('');
   }
 
   decrypt(text, key) {
+    if (!text || !key) {
+      throw Error('Incorrect arguments!');
+    }
     const gaps = [];
     
     for (let i = 0; i < text.length; i++) {
@@ -76,21 +82,21 @@ class VigenereCipheringMachine {
     let res = '';
 
     for (let i = 0; i < text.length; i++) {
-      if (text[i] === ' ' || text[i] === '!') {
+      if (!text[i].match(/[a-zA-Z]/)) {
         res += text[i];
         continue;
       }
-      let x = alphabet.indexOf(text[i].toUpperCase()) - alphabet.indexOf(newKey[i]);
+      let x = this.alphabet.indexOf(text[i].toUpperCase()) - this.alphabet.indexOf(newKey[i]);
       if (x > 25) {
         x = x % 26;
       }
       if (x < 0) {
         x = 26 - Math.abs(x);
       }
-      res += alphabet[x];
+      res += this.alphabet[x];
     }
 
-    return reverse ? res : res.split('').reverse().join('');
+    return this.reverse ? res : res.split('').reverse().join('');
   }
 }
 
